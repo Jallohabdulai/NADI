@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Take Exam</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
+    .question-box {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #fff;
+    border-left: 4px solid #0066ff;
+    border-radius: 6px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">Student Panel</div>
+        <ul>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li class="active"><a href="#">Take Exam</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+        <h1>{{ exam.title }}</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- MCQ SECTION -->
+            <div class="card">
+                <h3>Multiple Choice Questions</h3>
+
+                {% for q in mcqs %}
+                <div class="question-box">
+                    <p><strong>{{ q.question }}</strong></p>
+
+                    <label><input type="radio" name="mcq_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
+                    <label><input type="radio" name="mcq_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
+                    <label><input type="radio" name="mcq_{{ q.id }}" value="C"> {{ q.option_c }}</label><br>
+                    <label><input type="radio" name="mcq_{{ q.id }}" value="D"> {{ q.option_d }}</label><br>
+                </div>
+                <hr>
+                {% endfor %}
+            </div>
+
+            <!-- ESSAY SECTION -->
+            <div class="card">
+                <h3>Essay Questions</h3>
+
+                {% for q in essays %}
+                <div class="question-box">
+                    <p><strong>{{ q.question }}</strong></p>
+                    <textarea name="essay_{{ q.id }}" placeholder="Write your answer here"></textarea>
+                </div>
+                <hr>
+                {% endfor %}
+            </div>
+
+            <button type="submit">Submit Exam</button>
+
+        </form>
+
+    </main>
+
+</div>
+
+</body>
+</html>

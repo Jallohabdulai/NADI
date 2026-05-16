@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Staff</title>
+{% load static %}
+<style>
+    select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th {
+    background: #02094a;
+    color: white;
+    padding: 10px;
+}
+
+table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:hover {
+    background: #f2f4f8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <main class="main-content">
+
+        <h1>👨‍🏫 Manage Staff</h1>
+
+        <!-- STAFF FORM -->
+        <div class="card">
+            <h3>Add Staff</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <select name="institution" required>
+                    <option value="">Select Institution</option>
+                    {% for i in institutions %}
+                        <option value="{{ i.id }}">{{ i.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="text" name="full_name" placeholder="Full Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="phone" placeholder="Phone">
+
+                <select name="role">
+                    <option value="lecturer">Lecturer</option>
+                    <option value="admin">Admin</option>
+                    <option value="dean">Dean</option>
+                    <option value="registrar">Registrar</option>
+                </select>
+
+                <button type="submit">Add Staff</button>
+            </form>
+        </div>
+
+        <!-- STAFF TABLE -->
+        <div class="card">
+            <h3>Staff List</h3>
+
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Institution</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% for s in staff %}
+                <tr>
+                    <td>{{ s.full_name }}</td>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.role }}</td>
+                    <td>{{ s.institution.name }}</td>
+                    <td>
+                        <a href="{% url 'edit_staff' s.id %}">
+                            <button>Edit</button>
+                        </a>
+
+                        <a href="{% url 'delete_staff' s.id %}">
+                            <button style="background:red;">Delete</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

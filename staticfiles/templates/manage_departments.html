@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Departments</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- ✅ Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i>Admin Dashboard</div>
+       <ul>
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li>
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+        </ul>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <h1><i class="fa-solid fa-chart-line"></i> Manage Departments</h1>
+
+        <!-- Add Department -->
+        <div class="card">
+            <h3>Add New Department</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Department Name" required>
+                <input type="text" name="head" placeholder="Head of Department" required>
+                <input type="email" name="contact" placeholder="Contact Email" required>
+                <textarea name="courses" placeholder="Enter courses separated by commas" required></textarea>
+
+                <button type="submit">Add Department</button>
+            </form>
+        </div>
+
+        <!-- Existing Departments -->
+        <div class="card">
+            <h3>Existing Departments</h3>
+
+            <ul>
+                {% for dept in departments %}
+                    <li>
+                        <strong>{{ dept.name }}</strong>  
+                        — Head: {{ dept.head }}  
+                        — Contact: {{ dept.contact }}
+
+                        <br>
+
+                        <small>Courses: {{ dept.courses }}</small>
+
+                        <!-- Buttons -->
+                        <br><br>
+                        <a href="{% url 'edit_department' dept.id %}">
+                            <button>Edit</button>
+                        </a>
+                        <a href="{% url 'delete_department' dept.id %}">
+                            <button style="background:red;">Delete</button>
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No departments added yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </main>
+
+</div>
+</body>
+</html>

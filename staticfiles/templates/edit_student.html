@@ -1,0 +1,73 @@
+<style>
+    /* Wrapper to center the edit form */
+.edit-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+/* Card container */
+.edit-card {
+    background: white;
+    padding: 30px;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* Title */
+.edit-card h2 {
+    color: #0066ff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Inputs */
+.edit-card input[type="text"],
+.edit-card input[type="email"],
+.edit-card input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+/* Button */
+.edit-card button {
+    width: 100%;
+    padding: 12px;
+    background: #0066ff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.edit-card button:hover {
+    background: #004dcc;
+}
+</style>
+
+
+<div class="edit-wrapper">
+    <div class="edit-card">
+
+        <h2>Edit Student</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <input type="text" name="fullname" value="{{ student.full_name }}" required>
+            <input type="email" name="email" value="{{ student.email }}" required>
+            <input type="text" name="level" value="{{ student.level }}" required>
+            <input type="text" name="department" value="{{ student.department }}" required>
+
+            <button type="submit">Update</button>
+        </form>
+
+    </div>
+</div>

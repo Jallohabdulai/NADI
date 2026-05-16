@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Dashboard</title>
+{% load static %}
+<style>
+    /* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Layout */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #0066ff;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.sidebar .logo {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.sidebar ul a {
+    list-style: none;
+}
+.sidebar ul a {
+    list-style: none;
+    text-decoration: none;
+    color: white;
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar ul li:hover,
+.sidebar ul li.active {
+    background-color: #004dcc;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+    background-color: #f2f4f8;
+    overflow-y: auto;
+}
+
+.main-content h1 {
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Profile card */
+.profile-card {
+    display: flex;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.profile-photo {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.profile-info h2 {
+    margin-bottom: 10px;
+}
+
+/* Grid for other cards */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+    margin-bottom: 15px;
+    color: #0066ff;
+}
+
+.card ul {
+    list-style: none;
+}
+
+.card ul li {
+    margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">Academic Data Identity System</div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'certificate' %}">Certificates</a></li>
+                    <li><a href="{% url 'department'%}">Departments</a></li>
+                    <li>Account Settings</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main-content">
+            <h1>Welcome, {{ student.full_name }}</h1>
+
+            <!-- Profile card -->
+            <div class="card profile-card">
+                {% if student.profile_photo %}
+                <img src="{{student.profile_photo.url}}" alt="Profile Photo" class="profile-photo">
+                {% else %}
+                <img src="{% static 'logo.jpeg' %}" alt="Profile Photo" class="profile-photo">
+                {% endif %}
+                <div class="profile-info">
+                    <h2>{{ student.full_name }}</h2>
+                    <p><strong>Student ID:</strong> {{ student.student_id }}</student></p>
+                    <p><strong>Email:</strong> {{ student.email }}</p>
+                    <p><strong>Department:</strong> {{ student.department }}</p>
+                    <p><strong>Year:</strong> {{ student.level }}</p>
+                </div>
+            </div>
+
+            <!-- Grid for other info -->
+            <div class="grid-container">
+                
+                <div class="card">
+    <h3>My Courses & Modules</h3>
+
+    {% for sc in student_courses %}
+        <h4>{{ sc.course.name }} ({{ sc.course.code }})</h4>
+
+        <ul>
+            {% for module in sc.course.modules.all %}
+                <li>{{ module.name }} - {{ module.code }}</li>
+            {% empty %}
+                <li>No modules assigned</li>
+            {% endfor %}
+        </ul>
+
+        <hr>
+    {% empty %}
+        <p>No courses assigned yet.</p>
+    {% endfor %}
+</div>
+
+                <div class="card">
+                    <h3>My Certificates</h3>
+                    <ul>
+                        <li>Certificate 2021.pdf</li>
+                        <li>Certificate 2022.pdf</li>
+                    </ul>
+                </div>
+
+               <div class="card">
+    <h3>My Exams</h3>
+
+    {% for exam in assigned_exams %}
+        <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+
+            <p><strong>{{ exam.exam.title }}</strong></p>
+            <p>Course: {{ exam.exam.course.name }}</p>
+
+            {% if exam.is_completed %}
+                <p style="color: green;">✔ Completed</p>
+                <a href="#">
+                    <button disabled>Already Taken</button>
+                </a>
+            {% else %}
+                <p style="color: orange;">⏳ Pending</p>
+                <a href="{% url 'take_exam' exam.exam.id %}">
+                    <button style="background:#0066ff; color:white; padding:5px 10px; border:none; border-radius:5px;">
+                        Start Exam
+                    </button>
+                </a>
+            {% endif %}
+
+        </div>
+    {% empty %}
+        <p>No exams assigned yet.</p>
+    {% endfor %}
+</div>
+<div class="card">
+    <h3>My Exam Results</h3>
+
+    {% if completed_exams %}
+        <ul>
+            {% for result in completed_exams %}
+                <li style="margin-bottom: 12px; padding: 8px; border-bottom: 1px solid #eee;">
+
+                    <strong>{{ result.exam.title }}</strong><br>
+
+                    <!-- Show course/module if needed -->
+                    <small>Course: {{ result.exam.course.name }}</small><br>
+
+                    <!-- MCQ Score -->
+                    <span><strong>Score:</strong> {{ result.score }} / {{ result.exam.mcqquestion_set.count }}</span><br>
+
+                    <!-- Completion status -->
+                    <span style="color:green;">✔ Completed</span>
+
+                    <!-- Optional: link to detailed answer page -->
+                    <!-- <a href="#">View Details</a> -->
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No completed exams yet.</p>
+    {% endif %}
+</div>
+<div class="card">
+    <h3>My Module Grades</h3>
+
+    <ul>
+        {% for g in grades %}
+            <li>
+                {{ g.module.name }} ({{ g.module.course.name }}) - 
+                <strong>{{ g.grade }}</strong>
+            </li>
+        {% empty %}
+            <li>No grades yet</li>
+        {% endfor %}
+    </ul>
+</div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

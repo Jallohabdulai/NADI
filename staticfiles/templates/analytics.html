@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analytics</title>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f2f4f8;
+    margin: 0;
+}
+
+.container {
+    padding: 30px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.card h3 {
+    margin: 0;
+    color: #555;
+}
+
+.card p {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #3b82f6;
+}
+
+/* CHART BOX */
+.chart-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h2>📊 Analytics Dashboard</h2>
+
+    <!-- KPI CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <h3>Courses</h3>
+            <p>{{ courses }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Staff</h3>
+            <p>{{ staff }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Student Levels</h3>
+            <p>{{ students_by_level|length }}</p>
+        </div>
+
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-box">
+        <h3>Students by Level</h3>
+        <canvas id="levelChart"></canvas>
+    </div>
+
+</div>
+
+<script>
+const labels = [
+    {% for item in students_by_level %}
+        "{{ item.level }}",
+    {% endfor %}
+];
+
+const data = [
+    {% for item in students_by_level %}
+        {{ item.total }},
+    {% endfor %}
+];
+
+new Chart(document.getElementById('levelChart'), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Students',
+            data: data,
+            backgroundColor: '#3b82f6'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

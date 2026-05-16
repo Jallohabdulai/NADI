@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+
+<!-- ✅ Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    .stats-card {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* CARD STYLE */
+.stats-card .card {
+    background: #fff;
+    padding: 15px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.stats-card .card:hover {
+    transform: translateY(-3px);
+}
+
+/* ICON CIRCLE */
+.stats-card .icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+}
+
+/* TEXT */
+.stats-card .info .title {
+    font-size: 13px;
+    color: #666;
+}
+
+.stats-card .info h2 {
+    margin: 3px 0;
+    font-size: 18px;
+    color: #111;
+}
+
+.stats-card .info small {
+    font-size: 12px;
+    color: #16a34a;
+}
+
+/* COLORS (MATCH IMAGE STYLE) */
+.institutions .icon {
+    background: #2563eb;
+}
+
+.students .icon {
+    background: #16a34a;
+}
+
+.staff .icon {
+    background: #7c3aed;
+}
+
+.programs .icon {
+    background: #f59e0b;
+}
+
+.research .icon {
+    background: #14b8a6;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .stats-card {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-card {
+        grid-template-columns: 1fr;
+    }
+}
+    .chart-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.chart-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.chart-box h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+</style>
+</head>
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i> Admin Dashboard</div>
+
+        <ul>
+            <li class="active">
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li>
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+        </ul>
+    </aside>
+<main class="main-content">
+        <h1><i class="fa-solid fa-chart-line"></i> Admin Dashboard</h1>
+
+    <div class="stats-card">
+
+    <div class="card institutions">
+        <div class="icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="info">
+            <span class="title">Institutions</span>
+            <h2>{{ total_institutions }}</h2>
+            <small>↑ 4.5% this month</small>
+        </div>
+    </div>
+
+    <div class="card students">
+        <div class="icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="info">
+            <span class="title">Students</span>
+            <h2>{{ total_students }}</h2>
+            <small>↑ 6.2% this month</small>
+        </div>
+    </div>
+
+    <div class="card staff">
+        <div class="icon"><i class="fa-solid fa-users-gear"></i></div>
+        <div class="info">
+            <span class="title">Staff</span>
+            <h2>{{ total_staff }}</h2>
+            <small>↑ 3.8% this month</small>
+        </div>
+    </div>
+
+    <div class="card programs">
+        <div class="icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="info">
+            <span class="title">Programs</span>
+            <h2>{{ total_courses }}</h2>
+            <small>↑ 2.7% this month</small>
+        </div>
+    </div>
+
+    <div class="card research">
+        <div class="icon"><i class="fa-solid fa-flask"></i></div>
+        <div class="info">
+            <span class="title">Research</span>
+            <h2>{{ total_research }}</h2>
+            <small>↑ 8.1% this month</small>
+        </div>
+    </div>
+
+</div>
+    <div class="chart-wrapper">
+
+    <!-- BAR CHART -->
+    <div class="chart-box">
+        <h3>Student Enrollment Trend</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- PIE CHART -->
+    <div class="chart-box">
+        <h3>Students by Level</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+</div>
+<script>
+const months = JSON.parse('{{ months|escapejs }}');
+const counts = JSON.parse('{{ counts|escapejs }}');
+
+const levelLabels = JSON.parse('{{ level_labels|escapejs }}');
+const levelCounts = JSON.parse('{{ level_counts|escapejs }}');
+
+/* SCATTER CHART */
+new Chart(document.getElementById('barChart'), {
+    type: 'scatter',
+    data: {
+        datasets: [{
+            label: 'Students',
+            data: months.map((m, index) => ({
+                x: m,
+                y: counts[index]
+            })),
+            backgroundColor: '#3b82f6',
+            pointRadius: 6,
+            pointHoverRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                type: 'category',
+                title: {
+                    display: true,
+                    text: 'Months'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Students'
+                }
+            }
+        },
+        plugins: {
+            legend: { display: true }
+        }
+    }
+});
+
+/* PIE CHART */
+new Chart(document.getElementById('pieChart'), {
+    type: 'pie',
+    data: {
+        labels: levelLabels,
+        datasets: [{
+            data: levelCounts,
+            backgroundColor: [
+                '#3b82f6',
+                '#10b981',
+                '#f59e0b',
+                '#ef4444'
+            ]
+        }]
+    }
+});
+</script>
+
+</div>
+</div>
+</body>
+</html>

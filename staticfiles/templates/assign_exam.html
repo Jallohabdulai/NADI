@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assign Exam</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f2f4f8;
+    padding: 30px;
+}
+
+.card {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #0066ff;
+    text-align: center;
+}
+
+select, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #0066ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #004dcc;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Assign Exam</h2>
+
+    <p><strong>Exam:</strong> {{ exam.title }}</p>
+    <p><strong>Course:</strong> {{ exam.course.name }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Select Student</label>
+        <select name="student_id" required>
+            <option value="">-- Choose Student --</option>
+
+            {% for student in students %}
+                <option value="{{ student.id }}">
+                    {{ student.full_name }} ({{ student.student_id }})
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">Assign Exam</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

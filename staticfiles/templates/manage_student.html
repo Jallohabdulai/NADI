@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Students</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i> Admin Dashboard</div>
+          <ul>
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li>
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+</ul>
+    </aside>
+
+    <!-- MAIN SECTION -->
+    <main class="main-content">
+
+        <h1><i class="fa-solid fa-chart-line"></i> Manage Students</h1>
+
+        <!-- 🔍 SEARCH BAR -->
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search student..."
+            style="width: 100%; padding: 12px; margin-bottom: 20px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc;"
+        >
+
+        <!-- STUDENT TABLE -->
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Level</th>
+                <th>Department</th>
+                <th>Password</th>
+                <th>Generate</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for student in students %}
+            <tr>
+                <td>{{ student.student_id }}</td>
+                <td>{{ student.full_name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.level }}</td>
+                <td>{{ student.department }}</td>
+
+                <!-- PASSWORD FIELD -->
+                <td>
+                    <input 
+                        type="text" 
+                        id="pass-{{ student.id }}" 
+                        value="{{ student.password }}" 
+                        readonly
+                        style="width:130px; padding:6px;"
+                    >
+                </td>
+
+                <!-- PASSWORD GENERATOR BUTTONS -->
+                <td>
+                    <button 
+                        onclick="generatePassword({{ student.id }})" 
+                        style="padding:6px 8px; background:#0066ff; color:white; border:none; border-radius:5px;">
+                        <i class="fa fa-key"></i>
+                    </button>
+
+                    <button 
+                        onclick="copyPassword({{ student.id }})" 
+                        style="padding:6px 8px; background:green; color:white; border:none; border-radius:5px;">
+                        <i class="fa fa-copy"></i>
+                    </button>
+                </td>
+
+                <!-- ACTION BUTTONS -->
+                <td>
+                    <a href="{% url 'edit_student' student.id %}">
+                        <button>Edit</button>
+                    </a>
+
+                    <a href="{% url 'delete_student' student.id %}">
+                        <button style="background:red;">Delete</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </main>
+</div>
+
+<!-- 🔍 SEARCH SCRIPT -->
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("table tr");
+
+    rows.forEach((row, index) => {
+        if (index === 0) return; // skip header
+
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+</script>
+
+<!-- 🔐 PASSWORD GENERATOR -->
+<script>
+function generatePassword(studentId) {
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%";
+    let password = "";
+
+    for (let i = 0; i < 10; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    document.getElementById("pass-" + studentId).value = password;
+
+    // Optional AJAX save (if backend exists)
+    fetch("/save_generated_password/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({
+            student_id: studentId,
+            password: password
+        })
+    });
+}
+
+function copyPassword(studentId) {
+    let field = document.getElementById("pass-" + studentId);
+    field.select();
+    navigator.clipboard.writeText(field.value);
+    alert("Password copied!");
+}
+</script>
+
+</body>
+</html>

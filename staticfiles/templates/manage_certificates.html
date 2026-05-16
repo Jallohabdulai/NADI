@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Certificates</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- ✅ Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .card h3 {
+        color: #0066ff;
+        margin-bottom: 15px;
+    }
+    .cert-list li {
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #eef3ff;
+        border-radius: 6px;
+    }
+    .btn {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: white;
+    }
+    .edit-btn { background: #0099ff; }
+    .delete-btn { background: #ff0000; }
+</style>
+</head>
+
+<body>
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i>Admin Dashboard</div>
+        <ul>
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li>
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1><i class="fa-solid fa-chart-line"></i>Manage Certificates</h1>
+
+        <!-- Add Certificate -->
+        <div class="card">
+            <h3>Add New Certificate</h3>
+
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <input type="text" name="title" placeholder="Certificate Title" required>
+
+                <select name="student_id" required>
+                    <option value="">Assign to Student</option>
+                    {% for s in students %}
+                        <option value="{{ s.id }}">{{ s.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="file" name="file" accept="application/pdf" required>
+
+                <button class="btn" style="background:#0066ff;" type="submit">Upload Certificate</button>
+            </form>
+        </div>
+
+        <!-- Existing Certificates -->
+        <div class="card">
+            <h3>Existing Certificates</h3>
+            <ul class="cert-list">
+
+                {% for cert in certificates %}
+                <li>
+                    <strong>{{ cert.title }}</strong> —
+                    {{ cert.student.full_name }}
+
+                    <a href="{{ cert.file.url }}" download>Download</a>
+
+                    <!-- Edit -->
+                    <a href="{% url 'edit_certificate' cert.id %}">
+                        <button class="btn edit-btn">Edit</button>
+                    </a>
+
+                    <!-- Delete -->
+                    <a href="{% url 'delete_certificate' cert.id %}">
+                        <button class="btn delete-btn">Delete</button>
+                    </a>
+                </li>
+                {% empty %}
+                <p>No certificates uploaded yet.</p>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </main>
+</div>
+</body>
+</html>
