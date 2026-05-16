@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Manage Exams</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- ✅ Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<script>
+    function filterModules() {
+        let courseSelect = document.getElementById("course");
+        let moduleSelect = document.getElementById("module");
+
+        let courseId = courseSelect.value;
+
+        // hide all modules first
+        for (let i = 0; i < moduleSelect.options.length; i++) {
+            let option = moduleSelect.options[i];
+            option.style.display = option.getAttribute("data-course") === courseId || option.value === "" 
+                ? "block" : "none";
+        }
+
+        moduleSelect.value = "";
+    }
+</script>
+</head>
+
+<body>
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i>Admin Dashboard</div>
+        <ul>
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li class="active">
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+        <h1><i class="fa-solid fa-chart-line"></i> Exam Management</h1>
+
+        <!-- CREATE EXAM -->
+        <div class="card">
+            <h3>Create New Exam</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- COURSE -->
+                <select name="course" id="course" onchange="filterModules()" required>
+                    <option value="">Select Course</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <!-- MODULE -->
+                <select name="module" id="module" required>
+                    <option value="">Select Module</option>
+                    {% for course in courses %}
+                        {% for module in course.modules.all %}
+                            <option value="{{ module.id }}" data-course="{{ course.id }}">
+                                {{ module.name }}
+                            </option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+
+                <input type="text" name="title" placeholder="Exam Title" required>
+                <input type="number" name="duration" placeholder="Duration (minutes)" required>
+
+                <button type="submit">Create Exam</button>
+            </form>
+        </div>
+
+        <!-- EXISTING EXAMS -->
+        <div class="card">
+            <h3>Existing Exams</h3>
+
+            <ul>
+                {% for exam in exams %}
+                <li>
+                    <strong>{{ exam.title }}</strong>
+                    <br>
+                    Course: {{ exam.course.name }} |
+                    Module: {{ exam.module.name }}
+
+                    <a href="{% url 'assign_exam' exam.id %}">
+                        <button>Assign</button>
+                    </a>
+
+                    <a href="{% url 'add_mcq' exam.id %}">
+                        <button>MCQ</button>
+                    </a>
+
+                    <a href="{% url 'add_essay' exam.id %}">
+                        <button>Essay</button>
+                    </a>
+                    <a href="{% url 'grade_essays' exam.id %}">
+            <button>Grade Essays</button>
+        </a>
+                </li>
+                {% empty %}
+                <li>No exams yet</li>
+                {% endfor %}
+            </ul>
+            
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

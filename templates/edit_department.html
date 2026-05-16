@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Department</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">Admin Dashboard</div>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'manage_departments' %}">Manage Departments</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1>Edit Department</h1>
+
+        <div class="card">
+            <h3>Update Department</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <input type="text" name="name" value="{{ dept.name }}" placeholder="Department Name" required>
+
+                <input type="text" name="head" value="{{ dept.head }}" placeholder="Head of Department" required>
+
+                <input type="email" name="contact" value="{{ dept.contact }}" placeholder="Contact Email" required>
+
+                <textarea name="courses" required>{{ dept.courses }}</textarea>
+
+                <button type="submit">Update Department</button>
+            </form>
+        </div>
+    </main>
+
+</div>
+
+</body>
+</html>

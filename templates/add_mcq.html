@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add MCQ</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
+    /* SELECT INPUT (IMPORTANT) */
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: white;
+}
+
+/* EXAM LIST STYLE */
+.card ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+
+.card ul li button {
+    margin-left: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    < <aside class="sidebar">
+        <div class="logo">Admin Dashboard</div>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Home</a></li>
+            <li><a href="{% url 'manage_student' %}">Students</a></li>
+            <li><a href="{% url 'manage_courses' %}">Courses</a></li>
+            <li><a href="{% url 'manage_exams' %}">Exams</a></li>
+            <li class="active"><a href="{% url 'add_mcq' exam.id %}">Add MCQ</a></li>
+            <li><a href="{% url 'manage_grades' %}">Manage Grades</a></li>
+            <li><a href="{% url 'manage_departments' %}">Manage Departments</a></li>
+            <li><a href="{% url 'manage_certificates' %}">Manage Certificates</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+
+        <h1>Add MCQ Question ({{ exam.title }})</h1>
+
+        <div class="card">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <textarea name="question" placeholder="Question" required></textarea>
+
+                <input type="text" name="a" placeholder="Option A" required>
+                <input type="text" name="b" placeholder="Option B" required>
+                <input type="text" name="c" placeholder="Option C" required>
+                <input type="text" name="d" placeholder="Option D" required>
+
+                <select name="correct">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+
+                <button type="submit">Save MCQ</button>
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

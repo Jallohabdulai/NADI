@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Courses</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- ✅ Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+    .card {
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .course-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .course-item {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .course-item strong {
+        color: #0066ff;
+    }
+
+    .course-item a {
+        margin-right: 10px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .course-item ul {
+        margin-top: 10px;
+        padding-left: 20px;
+    }
+
+    .course-item ul li {
+        font-size: 14px;
+        color: #555;
+    }
+
+    button {
+        background: #0066ff;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    select, input {
+        padding: 8px;
+        margin: 5px 0;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+</head>
+
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo"><i class="fa-solid fa-gauge"></i>Admin Dashboard</div>
+        <ul>
+            <li>
+                <a href="{% url 'admin_dashboard' %}">
+                    <i class="fa-solid fa-house"></i> Dashboard
+                </a>
+            </li>
+            <li >
+                <a href="{% url 'manage_institutions' %}">
+                    <i class="fa-solid fa-building-columns"></i> Institutions
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_student' %}">
+                    <i class="fa-solid fa-users"></i> Students
+                </a>
+            </li>
+             <li>
+                <a href="{% url 'manage_staff' %}">
+                    <i class="fa-solid fa-users-gear"></i> Staff
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'academic_records' %}">
+        <i class="fa-solid fa-folder-open"></i> Academic Records
+    </a>
+</li>
+<li>
+                <a href="{% url 'manage_exams' %}">
+                    <i class="fa-solid fa-file-pen"></i> Examinations
+                </a>
+            </li>
+
+            <li class="active">
+                <a href="{% url 'manage_courses' %}">
+                    <i class="fa-solid fa-book"></i> Program & Courses
+                </a>
+            </li>
+            <li>
+    <a href="{% url 'research' %}">
+        <i class="fa-solid fa-flask"></i> Research & Innovation
+    </a>
+</li>
+<li>
+    <a href="{% url 'accreditation' %}">
+       <i class="fa-solid fa-award"></i> Accreditation
+    </a>
+</li>
+<li>
+    <a href="{% url 'analytics' %}">
+        <i class="fa-solid fa-chart-line"></i> Report & Analytics
+    </a>
+</li>
+<li>
+    <a href="{% url 'data_requests' %}">
+        <i class="fa-solid fa-database"></i> Data Requests
+    </a>
+</li>
+            <li>
+                <a href="{% url 'manage_grades' %}">
+                    <i class="fa-solid fa-graduation-cap"></i> Manage Grades
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_departments' %}">
+                    <i class="fa-solid fa-building-columns"></i> Manage Departments
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'manage_certificates' %}">
+                    <i class="fa-solid fa-certificate"></i> Manage Certificates
+                </a>
+            </li>
+
+<li>
+    <a href="{% url 'assign_role' user.id %}">
+        <i class="fa-solid fa-user-shield"></i> Users & Role
+    </a>
+</li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <h1><i class="fa-solid fa-chart-line"></i> Manage Courses</h1>
+
+        <!-- ADD NEW COURSE -->
+        <div class="card">
+            <h3>Add New Course</h3>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="create_course" value="1">
+
+                <input type="text" name="name" placeholder="Course Name">
+                <input type="text" name="code" placeholder="Course Code">
+                <input type="number" name="credits" placeholder="Credits">
+
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+
+        <!-- ASSIGN COURSE TO STUDENT -->
+        <div class="card">
+            <h3>Assign Course to Student</h3>
+
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="assign_course" value="1">
+
+                <label>Select Student</label>
+                <select name="student_id" required>
+                    <option value="">Choose Student</option>
+                    {% for s in students %}
+                        <option value="{{ s.id }}">{{ s.full_name }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Select Course</label>
+                <select name="course_id" required>
+                    <option value="">Choose Course</option>
+                    {% for c in courses %}
+                        <option value="{{ c.id }}">{{ c.name }} ({{ c.code }})</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Assign Course</button>
+            </form>
+        </div>
+
+        <!-- EXISTING COURSES LIST -->
+        <div class="card">
+            <h3>Existing Courses</h3>
+
+            <ul class="course-list">
+                {% for course in courses %}
+                <li class="course-item">
+
+                    <strong>{{ course.name }} ({{ course.code }})</strong>
+                    — {{ course.credits }} credits
+
+                    <!-- ACTIONS -->
+                    <a href="{% url 'edit_course' course.id %}">Edit</a>
+                    <a href="{% url 'delete_course' course.id %}" style="color:red;">Delete</a>
+
+                    <!-- MODULES -->
+                    <h4>Modules</h4>
+                    <ul>
+                        {% for module in course.modules.all %}
+                            <li>{{ module.name }} ({{ module.code }})</li>
+                        {% empty %}
+                            <li>No modules yet</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- ADD MODULE -->
+                    <a href="{% url 'add_module' course.id %}">
+                        Add Module
+                    </a>
+
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

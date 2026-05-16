@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courses & Grades</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f4f8;
+        margin: 0;
+        padding: 0;
+    }
+
+    .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        width: 220px;
+        background-color: #0066ff;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .sidebar .logo {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+        list-style: none;
+    }
+    .sidebar ul a {
+    list-style: none;
+    text-decoration: none;
+    color: white;
+    list-style-type: none;
+}
+
+    .sidebar ul li {
+        padding: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+
+    .sidebar ul li:hover,
+    .sidebar ul li.active {
+        background-color: #004dcc;
+    }
+
+    /* Main content */
+    .main-content {
+        flex: 1;
+        padding: 30px;
+        background-color: #f2f4f8;
+        overflow-y: auto;
+    }
+
+    .main-content h1 {
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    /* Grid layout for course cards */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+        margin-bottom: 15px;
+        color: #0066ff;
+    }
+
+    /* Course checkboxes */
+    .card input[type="checkbox"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    /* Grade input */
+    .card input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        background-color: #0066ff;
+        color: white;
+        padding: 12px;
+        font-size: 17px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #004dcc;
+    }
+</style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">Academic Data Identity System</div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="{% url 'certificate' %}">Certificates</a></li>
+                <li><a href="department.html">Departments</a></li>
+                <li>Account Settings</li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <h1>My Courses & Grades</h1>
+
+        <form>
+            <div class="grid-container">
+                <!-- Course 1 -->
+                <div class="card">
+                    {% for course, grade in grades.items %}
+<tr>
+    <td>{{ course }}</td>
+    <td>{{ grade }}</td>
+</tr>
+{% endfor %}
+                </div>
+
+                <!-- Course 2 -->
+                <div class="card">
+                    <h3><input type="checkbox" name="course" value="algorithm" checked> Algorithm</h3>
+                    <input type="text" placeholder="Enter grade (e.g., A, B+, C)">
+                </div>
+
+                <!-- Course 3 -->
+                <div class="card">
+                    <h3><input type="checkbox" name="course" value="web-development" checked> Web Development</h3>
+                    <input type="text" placeholder="Enter grade (e.g., A, B+, C)">
+                </div>
+
+                <!-- Course 4 -->
+                <div class="card">
+                    <h3><input type="checkbox" name="course" value="web-design" checked> Web Design</h3>
+                    <input type="text" placeholder="Enter grade (e.g., A, B+, C)">
+                </div>
+            </div>
+
+            <button type="submit">Submit Courses & Grades</button>
+        </form>
+    </main>
+</div>
+
+</body>
+</html>

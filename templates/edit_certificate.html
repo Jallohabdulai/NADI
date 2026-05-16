@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Certificate</title>
+</head>
+<body>
+
+<h2>Edit Certificate</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Certificate Title</label>
+    <input type="text" name="title" value="{{ cert.title }}" required>
+
+    <label>Assign to Student</label>
+    <select name="student_id">
+        {% for s in students %}
+            <option value="{{ s.id }}" {% if s.id == cert.student.id %}selected{% endif %}>
+                {{ s.full_name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Upload New PDF (Optional)</label>
+    <input type="file" name="file" accept="application/pdf">
+
+    <button type="submit">Update</button>
+</form>
+
+</body>
+</html>

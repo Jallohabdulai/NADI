@@ -1,0 +1,27 @@
+<h2>Grade Essays - {{ exam.title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {% for se in student_exams %}
+        <div style="border:1px solid #ccc; padding:15px; margin-bottom:20px;">
+            <h3>Student: {{ se.student.full_name }}</h3>
+
+            {% for ans in se.essayanswer_set.all %}
+                <p><strong>Question:</strong> {{ ans.question.question }}</p>
+
+                <p><strong>Answer:</strong></p>
+                <div style="background:#f9f9f9; padding:10px;">
+                    {{ ans.answer_text }}
+                </div>
+
+                <label>Marks:</label>
+                <input type="number" name="marks_{{ ans.id }}" value="{{ ans.marks_awarded }}">
+                
+                <hr>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Save Grades</button>
+</form>

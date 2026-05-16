@@ -1,0 +1,48 @@
+<form method="POST" action="{% url 'submit_exam' exam.id %}">
+    {% csrf_token %}
+
+    <!-- TIMER -->
+    <h3>Time Remaining: <span id="timer"></span></h3>
+
+    <!-- MCQs -->
+    {% for q in mcqs %}
+        <div class="question-box">
+            <p><strong>{{ q.question }}</strong></p>
+
+            <label><input type="radio" name="mcq_{{ q.id }}" value="A"> {{ q.option_a }}</label><br>
+            <label><input type="radio" name="mcq_{{ q.id }}" value="B"> {{ q.option_b }}</label><br>
+            <label><input type="radio" name="mcq_{{ q.id }}" value="C"> {{ q.option_c }}</label><br>
+            <label><input type="radio" name="mcq_{{ q.id }}" value="D"> {{ q.option_d }}</label><br>
+        </div>
+        <hr>
+    {% endfor %}
+
+    <!-- ESSAYS -->
+    {% for q in essays %}
+        <div class="question-box">
+            <p><strong>{{ q.question }}</strong></p>
+            <textarea name="essay_{{ q.id }}"></textarea>
+        </div>
+        <hr>
+    {% endfor %}
+
+    <button type="submit">Submit Exam</button>
+</form>
+
+<script>
+let remaining = {{ remaining_seconds }};
+
+function updateTimer() {
+    if (remaining <= 0) {
+        document.querySelector("form").submit();
+    }
+
+    let min = Math.floor(remaining / 60);
+    let sec = remaining % 60;
+
+    document.getElementById("timer").innerHTML = min + "m " + sec + "s";
+    remaining--;
+}
+
+setInterval(updateTimer, 1000);
+</script>
