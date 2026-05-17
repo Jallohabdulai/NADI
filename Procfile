@@ -1,1 +1,1 @@
-web: gunicorn ADIS.wsgi
+web: gunicorn NADI.wsgi
