@@ -28,6 +28,10 @@ SECRET_KEY = 'django-insecure-5=5e7j7_z%h3_)t7$1xm7l^)p88(e_2aicf@50f-c+9b897qyv
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://nadi-production-ad0d.up.railway.app",
+    "https://*.up.railway.app",
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
