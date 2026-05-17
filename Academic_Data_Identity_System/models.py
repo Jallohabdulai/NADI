@@ -15,7 +15,7 @@ class Institution(models.Model):
 class Staff(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=200)
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    contact = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField()
     role = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
